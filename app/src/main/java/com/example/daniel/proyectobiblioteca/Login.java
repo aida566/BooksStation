@@ -35,6 +35,7 @@ public class Login extends AppCompatActivity {
     private TextInputLayout tlLogin;
     private TextInputLayout tlPass;
 
+    private FirebaseAuth autentificador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,12 @@ public class Login extends AppCompatActivity {
         btIniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inicioSesion(txEmail.getText().toString(), txPassword.getText().toString());
+                if (!txEmail.getText().toString().isEmpty() && !txPassword.getText().toString().isEmpty()) {
+                    iniciarSesion(txEmail.getText().toString(), txPassword.getText().toString());
+                } else {
+                    controlErrores(txEmail.getText().toString(),
+                            txPassword.getText().toString());
+                }
             }
         });
 
@@ -66,6 +72,8 @@ public class Login extends AppCompatActivity {
         });
     }
 
+
+
     public void inicializar(){
         txEmail=findViewById(R.id.txEmail_actLogin);
         txPassword=findViewById(R.id.txPassword_actLogin);
@@ -76,29 +84,15 @@ public class Login extends AppCompatActivity {
         btRedirectRegister = findViewById(R.id.bt_redirect_register);
 
         //Firebase--
-        FirebaseApp.initializeApp(this);
         imagenUsuario=findViewById(R.id.image_actLogin);
 
         //-----firebase----
         FirebaseApp.initializeApp(this);
         firebase = new Firebase(getApplicationContext());
+        autentificador=  FirebaseAuth.getInstance();
 
     }
 
-    public void inicioSesion(String user, String pass){
-       // FirebaseApp.initializeApp(this);
-       // firebase = new Firebase(getApplicationContext());
-    if (!user.isEmpty() && !pass.isEmpty()) {
-            firebase.autentificar(user, pass);
-            if (firebase.usuarioLogueado() == true){ // Se ha logeado
-
-          Intent i = new Intent(Login.this, Lecturas.class);
-         startActivity(i);
-      }else{
-            controlErrores(user, pass);
-      }
-    }
-    }
 
     public void controlErrores(String user, String pass){
         if (user.isEmpty()){
@@ -107,10 +101,26 @@ public class Login extends AppCompatActivity {
         else if (pass.isEmpty()){
             tlPass.setError(getString(R.string.password_vacia));
         }
-        else { //si el usuario y la contraseña no estan vacios, el error es de usuario o contraseña incorrectos
-            Toast.makeText(this, "Usuario o contraseña incorrectos, vuelva a intentarlo", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
+
+    public void iniciarSesion(String email, String password){
+
+        autentificador.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Login.this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(Login.this, Lecturas.class);
+                    startActivity(i);
+                } else {
+                    Toast.makeText(Login.this, "El usuario o contraseña no son correctos", Toast.LENGTH_SHORT).show();
+                }
+
+    }
+        });
+    }
 }
+
 

@@ -67,15 +67,14 @@ public  class Firebase {
 
     }
 
-    public  void autentificar(String email, String password) {
+    public  boolean autentificar(String email, String password) {
+        Toast.makeText(contexto, "Autentificando...", Toast.LENGTH_SHORT).show();
         autentificador.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     usuario = autentificador.getCurrentUser();
                     System.out.println("Sesion iniciada");
-                    // guardarLecturaAsociada(usuario);
-
                 } else {
                     Log.v(TAG, task.getException().toString());
                     System.out.println("Usuario o contraseña incorrectos");
@@ -83,6 +82,13 @@ public  class Firebase {
             }
         }
     });
+   return usuarioLogueado();
+    }
+
+
+    public void cerrarSesion(){
+        autentificador.signOut();
+
     }
 
 
@@ -93,28 +99,9 @@ public  class Firebase {
             } else {
                 return false;
             }
-
     }
 
 
-
-    public  boolean correoPassword(String email) {
-        final boolean[] enviado = {false};
-        autentificador.sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            //System.out.println("Reset email instructions sent to");
-                            enviado[0] = true;
-                        } //else {
-                        // enviado[0] = false;
-                        // System.out.println("ERROR "+ task.getException().toString());
-                        //}
-                    }
-                });
-        return enviado[0];
-    }
 
     public  void crearUsuario(String email, String password) {
         autentificador.createUserWithEmailAndPassword(email, password).addOnCompleteListener

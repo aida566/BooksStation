@@ -9,9 +9,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.example.daniel.proyectobiblioteca.Firebase.Firebase;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -52,13 +57,8 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             if (comprobarDatos()){
-                registrarUsuario();
-
-             //   Intent intent = new Intent(Register.this, Lecturas.class);
-               // startActivity(intent);
+                registrarUsuario(tvEmail.getText().toString(), tvPassword.getText().toString());
             }
-
-
 
             }
         });
@@ -88,6 +88,8 @@ public class Register extends AppCompatActivity {
       FirebaseApp.initializeApp(this);
        firebase = new Firebase(getApplicationContext());
 
+      autentificador=  FirebaseAuth.getInstance();
+
   }
 
   public boolean comprobarDatos(){
@@ -109,8 +111,31 @@ public class Register extends AppCompatActivity {
 
   }
 
-  public void registrarUsuario(){
-        firebase.crearUsuario(tvEmail.getText().toString(), tvPassword.getText().toString());
+  public void registrarUsuario(String email, String password){
+      autentificador.createUserWithEmailAndPassword(email, password).addOnCompleteListener
+              // ((Executor) this, new OnCompleteListener<AuthResult>() { //El de carmelo estaba asi pero da error de casting
+                      (new OnCompleteListener<AuthResult>() { //Sin el executor
+                          @Override
+                          public void onComplete(@NonNull Task<AuthResult> task) {
+                              if (task.isSuccessful()) {
+                               //   FirebaseUser user1 = autentificador.getCurrentUser();
+                                  // Guardar en sharedPreferences la información o no, lo podemos hacer mas adelante
+                                  //    guardarUsuario(user1);
+                                  Toast.makeText(Register.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+                                Intent i =   new Intent(Register.this, Login.class);
+                                startActivity(i);
+                              } else {
+                                  Toast.makeText(Register.this, "Error al registrar" , Toast.LENGTH_SHORT).show();
+
+                              }
+                          }
+                      });
+
+
+
+
+
+     //   firebase.crearUsuario(tvEmail.getText().toString(), tvPassword.getText().toString());
 
       }
 

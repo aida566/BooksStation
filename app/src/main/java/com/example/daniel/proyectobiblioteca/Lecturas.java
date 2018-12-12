@@ -22,6 +22,7 @@ import android.widget.Spinner;
 
 import com.example.daniel.proyectobiblioteca.BDLocal.Ayudante;
 import com.example.daniel.proyectobiblioteca.BDLocal.Gestor;
+import com.example.daniel.proyectobiblioteca.Firebase.Firebase;
 import com.example.daniel.proyectobiblioteca.POJOS.Autor;
 import com.example.daniel.proyectobiblioteca.POJOS.Lectura;
 
@@ -52,6 +53,8 @@ public class Lecturas extends AppCompatActivity {
     private ArrayList<Lectura> lecturasNoLeidas = new ArrayList<>(); //segundo array donde guardamos los libros no leidos
     private ArrayList<Lectura> lecturasPorLeer = new ArrayList<>(); //tercer array donde guardamos los libros por leer
     private ArrayList<Autor> autores = new ArrayList<>();
+
+    Firebase firebase;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -108,6 +111,8 @@ public class Lecturas extends AppCompatActivity {
 
         ayudante = new Ayudante(this);
         gestor = new Gestor(this, true);
+
+        firebase = new Firebase(getApplicationContext());
 
         //Obtenemos las lecturas de la bd
         getLecturasBD();
@@ -219,4 +224,18 @@ public class Lecturas extends AppCompatActivity {
         lecturasPorLeer = gestor.getLecturasPorEstado(3);
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        firebase.cerrarSesion();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        firebase.cerrarSesion();
+    }
+
+
 }
