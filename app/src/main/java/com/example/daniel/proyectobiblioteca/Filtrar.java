@@ -48,6 +48,8 @@ public class Filtrar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filtrar);
 
+        getSupportActionBar().setTitle("");
+
         this.btBuscar = (Button) findViewById(R.id.btBuscar);
         this.rvFiltrar = (RecyclerView) findViewById(R.id.rvFiltrar);
         this.spAutor = (Spinner) findViewById(R.id.spAutor);

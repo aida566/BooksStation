@@ -22,8 +22,15 @@ import android.widget.Spinner;
 
 import com.example.daniel.proyectobiblioteca.BDLocal.Ayudante;
 import com.example.daniel.proyectobiblioteca.BDLocal.Gestor;
+import com.example.daniel.proyectobiblioteca.Firebase.Firebase;
 import com.example.daniel.proyectobiblioteca.POJOS.Autor;
 import com.example.daniel.proyectobiblioteca.POJOS.Lectura;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.text.ParseException;
@@ -52,6 +59,10 @@ public class Lecturas extends AppCompatActivity {
     private ArrayList<Lectura> lecturasNoLeidas = new ArrayList<>(); //segundo array donde guardamos los libros no leidos
     private ArrayList<Lectura> lecturasPorLeer = new ArrayList<>(); //tercer array donde guardamos los libros por leer
     private ArrayList<Autor> autores = new ArrayList<>();
+
+
+
+    private ArrayList<Lectura> lecturasFirebase = new ArrayList<>();
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -101,6 +112,7 @@ public class Lecturas extends AppCompatActivity {
 
         Resources res = getResources();
         getSupportActionBar().setIcon(res.getDrawable(R.mipmap.ic_logo));
+        getSupportActionBar().setTitle("");
 
         this.container = (ConstraintLayout) findViewById(R.id.container);
         this.navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -219,4 +231,34 @@ public class Lecturas extends AppCompatActivity {
         lecturasPorLeer = gestor.getLecturasPorEstado(3);
 
     }
+
+/*
+    public void setLecturasFirebase(){
+
+        Firebase firebase = new Firebase(getApplicationContext());
+        FirebaseUser usuario = firebase.getUsuario();
+
+        Query listaLibros =
+                FirebaseDatabase.getInstance().getReference()
+                        .child("/Usuario/" + usuario.getUid() +"-"+ usuario.getDisplayName()+"/libros/")
+                        .orderByKey();
+        listaLibros.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+                    System.out.println("NODO "+postSnapshot.getValue().toString());
+                    lecturasFirebase.add(postSnapshot.getValue(Lectura.class));
+                    adaptador.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        setAdapter(lecturasFirebase);
+
+    }
+
+*/
+
 }

@@ -14,6 +14,9 @@ public class Inicial extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicial);
+
+        getSupportActionBar().setTitle("");
+
         btIniciarSesion = findViewById(R.id.bt_iniciar_sesion);
         btRegistrarse = findViewById(R.id.bt_registrarse);
 

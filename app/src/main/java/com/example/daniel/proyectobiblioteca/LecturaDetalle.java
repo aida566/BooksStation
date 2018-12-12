@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +35,8 @@ import com.example.daniel.proyectobiblioteca.Firebase.Firebase;
 import com.example.daniel.proyectobiblioteca.POJOS.Autor;
 import com.example.daniel.proyectobiblioteca.POJOS.Lectura;
 
+//--
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -54,7 +57,7 @@ public class LecturaDetalle extends AppCompatActivity {
     private Button dtpfInicio, dtpfFin;//Botones para elegir la fecha
     private Calendar c;
     private DatePickerDialog dpd;
-    private TextView tvFechaInicio, tvFechaFin;
+    private EditText etFechaInicio, etFechaFin;
 
     private static final int SELECCIONAR_IMAGEN = 2;
 
@@ -80,13 +83,18 @@ public class LecturaDetalle extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_detalle);
         setSupportActionBar(toolbar);
 
+        Resources res = getResources();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setLogo(res.getDrawable(R.mipmap.ic_logo));
+
         inicializar();
 
         toggleOnClick();
         datePicker();
 
-        firebase = new Firebase(getApplicationContext());
-        Resources res = getResources();
+        //firebase = new Firebase(getApplicationContext());
 
         btSelImagen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,24 +132,16 @@ public class LecturaDetalle extends AppCompatActivity {
         }
 
         if(savedInstanceState != null){
-
-
             Log.v(TAG, "onSavedInstanceState no es null");
-
             txNombreLibro.setText(savedInstanceState.getString("titulo"));
             txAutor.setText(savedInstanceState.getString("nombreAutor"));
             tbFavorito.setChecked(savedInstanceState.getBoolean("fav"));
-            tvFechaInicio.setText(savedInstanceState.getString("fechaInicio"));
-            tvFechaFin.setText(savedInstanceState.getString("fechaFin"));
-
+            etFechaInicio.setText(savedInstanceState.getString("fechaInicio"));
+            etFechaFin.setText(savedInstanceState.getString("fechaFin"));
             rbValoracion.setRating(savedInstanceState.getInt("valoracion"));
-
-
             txResumen.setText(savedInstanceState.getString("resumen"));
             radioGroup.check(savedInstanceState.getInt("estado"));
-
             if(savedInstanceState.getString("uriImagen") != null){
-
                 imagenLibro.setImageURI(Uri.parse(savedInstanceState.getString("uriImagen")));
             }
         }else{
@@ -157,8 +157,8 @@ public class LecturaDetalle extends AppCompatActivity {
         String titulo = txNombreLibro.getText().toString();
         String nombreAutor = txAutor.getText().toString();
         boolean fav = tbFavorito.isChecked();
-        String fechaInicio = tvFechaInicio.getText().toString();
-        String fechaFin = tvFechaFin.getText().toString();
+        String fechaInicio = etFechaInicio.getText().toString(); //cambiar a edittext
+        String fechaFin = etFechaFin.getText().toString(); //cambiar a edittext
         int valoracion = Math.round(rbValoracion.getRating());
         String resumen = txResumen.getText().toString();
 
@@ -206,10 +206,13 @@ public class LecturaDetalle extends AppCompatActivity {
         txResumen=findViewById(R.id.txResumen);
         rbValoracion = findViewById(R.id.ratingBar);
         tbFavorito = findViewById(R.id.toggleButton3);
-        dtpfInicio = findViewById(R.id.datePickerInicio);
-        dtpfFin = findViewById(R.id.datePickerFin);
-        tvFechaInicio = findViewById(R.id.textViewInicio);
-        tvFechaFin = findViewById(R.id.textViewFin);
+
+        //dtpfInicio = findViewById(R.id.datePickerInicio);
+        //dtpfFin = findViewById(R.id.datePickerFin);
+
+        etFechaInicio = findViewById(R.id.et_fecha_inicio);
+        etFechaFin = findViewById(R.id.et_fecha_fin);
+
         radioGroup = findViewById(R.id.radioGroup);
         radioButton1 = findViewById(R.id.radioButton);
         radioButton2 = findViewById(R.id.radioButton2);
@@ -321,9 +324,6 @@ public class LecturaDetalle extends AppCompatActivity {
 
         txNombreLibro.setText(lectura.getTitulo());
         txAutor.setText(lectura.getAutor().getNombre());
-
-        Log.v(TAG, "VALORACION en LECTURADETALLE: " + lectura.getValoracion());
-
         rbValoracion.setRating(lectura.getValoracion());
 
         /*
@@ -334,8 +334,9 @@ public class LecturaDetalle extends AppCompatActivity {
         radioGroup.check(findViewById(radiobuttonID).getId());
         */
 
-        tvFechaInicio.setText( lectura.getFechaInicio());
-        tvFechaInicio.setText( lectura.getFechaFin());
+        etFechaInicio.setText( lectura.getFechaInicio());
+        etFechaFin.setText( lectura.getFechaFin());
+
         txResumen.setText(lectura.getResumen());
 
 
@@ -346,9 +347,12 @@ public class LecturaDetalle extends AppCompatActivity {
         txAutor.setEnabled(false);
         rbValoracion.setIsIndicator(true);
         txResumen.setEnabled(false);
-        dtpfInicio.setEnabled(false);
-        dtpfFin.setEnabled(false);
-        //editar = true;
+        etFechaInicio.setEnabled(false);
+        etFechaInicio.setFocusable(false);
+        etFechaFin.setFocusable(false);
+        etFechaFin.setEnabled(false);
+        //dtpfInicio.setEnabled(false);
+        //dtpfFin.setEnabled(false);
         tbFavorito.setEnabled(false);
         radioGroup.setEnabled(false);
         radioButton1.setEnabled(false);
@@ -359,13 +363,16 @@ public class LecturaDetalle extends AppCompatActivity {
     }
 
     public void habilitarEdicion(){
-
         txNombreLibro.setEnabled(true);
         txAutor.setEnabled(true);
         rbValoracion.setIsIndicator(false);
         txResumen.setEnabled(true);
-        dtpfInicio.setEnabled(true);
-        dtpfFin.setEnabled(true);
+        etFechaInicio.setEnabled(true);
+        etFechaInicio.setInputType(InputType.TYPE_NULL);
+        etFechaFin.setInputType(InputType.TYPE_NULL);
+        etFechaFin.setEnabled(true);
+        //dtpfInicio.setEnabled(true);
+        //dtpfFin.setEnabled(true);
         //editar=false;
         tbFavorito.setEnabled(true);
         radioGroup.setEnabled(true);
@@ -401,13 +408,9 @@ public class LecturaDetalle extends AppCompatActivity {
         Log.v(TAG, "Guardar - idAutor: " + autor.getId());
 
         boolean fav = tbFavorito.isChecked();
-        String fechaInicio = tvFechaInicio.getText().toString();
-        String fechaFin = tvFechaFin.getText().toString();
-
+        String fechaInicio = etFechaInicio.getText().toString();
+        String fechaFin = etFechaFin.getText().toString();
         int valoracion = Math.round(rbValoracion.getRating());
-
-        Log.v(TAG, "VALOR del rating: " + valoracion);
-
         String resumen = txResumen.getText().toString();
 
         Boolean autorCorrecto = !titulo.equalsIgnoreCase("");
@@ -445,8 +448,6 @@ public class LecturaDetalle extends AppCompatActivity {
             }
 
             Lectura lecturaNueva = new Lectura(titulo, autor, uriImagen, fav, fechaInicio, fechaFin, valoracion, estado, resumen);
-
-            Log.v(TAG, lecturaNueva.getValoracion() + "");
 
             //Variable que controlará si el resultado del activityForResult es correcto o erróneo
             //dependiendo de si se han insertado correctamente los datos en la BD.
@@ -570,19 +571,19 @@ public class LecturaDetalle extends AppCompatActivity {
         });
     }
 
+
     public void datePicker(){
-        dtpfInicio.setOnClickListener(new View.OnClickListener() {
+
+        etFechaInicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 seleccionarFecha("inicio");
             }
         });
 
-        dtpfFin.setOnClickListener(new View.OnClickListener() {
+        etFechaFin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 seleccionarFecha("fin");
             }
         });
@@ -595,7 +596,6 @@ public class LecturaDetalle extends AppCompatActivity {
     }
 
     public void seleccionarFecha(final String fecha){
-
         c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_MONTH);
         int month = c.get(Calendar.MONTH);
@@ -603,15 +603,13 @@ public class LecturaDetalle extends AppCompatActivity {
         dpd = new DatePickerDialog(LecturaDetalle.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
-
                 if(fecha.equalsIgnoreCase("inicio")){
 
-                    tvFechaInicio.setText(mDayOfMonth + "/" + (mMonth+1) + "/" + mYear);
+                    etFechaInicio.setText(mYear + "/" + (mMonth+1) + "/" + mDayOfMonth);
 
                 }else if(fecha.equalsIgnoreCase("fin")){
 
-                    tvFechaFin.setText(mDayOfMonth + "/" + (mMonth+1) + "/" + mYear);
-                }
+                    etFechaFin.setText(mYear + "/" + (mMonth+1) + "/" + mDayOfMonth);                }
             }
         }, year, month, day);
         dpd.show();

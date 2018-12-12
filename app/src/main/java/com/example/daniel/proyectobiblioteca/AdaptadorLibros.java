@@ -2,7 +2,6 @@ package com.example.daniel.proyectobiblioteca;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 
 public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHolder>{
 
-    private static final String TAG = "XYZ";
     private ArrayList<Lectura> listaLecturas;
     private final OnItemClickListener listener;
 
@@ -45,7 +43,6 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
         viewHolder.txTitulo.setText(lectura.getTitulo());
         viewHolder.txAutor.setText(String.valueOf(lectura.getAutor().getNombre()));
 
-        Log.v(TAG, "VALORACION en ADAPTADOR: " + lectura.getValoracion());
         viewHolder.valoracionLectura.setRating(lectura.getValoracion());
 
         if(lectura.getImagen() != null){
@@ -74,8 +71,9 @@ public class AdaptadorLibros extends RecyclerView.Adapter<AdaptadorLibros.ViewHo
             imagenLectura=itemView.findViewById(R.id.imagenLecturaRecycler);
             txTitulo=itemView.findViewById(R.id.txTituloRecycler);
             txAutor=itemView.findViewById(R.id.txAutorRecycler);
+
             valoracionLectura=itemView.findViewById(R.id.ratingBarRecycler);
-            valoracionLectura.setEnabled(false);
+            valoracionLectura.setIsIndicator(true);
 
         }
 

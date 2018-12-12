@@ -41,6 +41,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        getSupportActionBar().setTitle("");
+
         inicializar();
         btIniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override

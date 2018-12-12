@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -141,9 +143,11 @@ public class Lectura implements Parcelable {
         return fav;
     }
 
+
     public void setFav(boolean fav) {
         this.fav = fav;
     }
+    @Exclude
     public void setFav(int fav) {
         this.fav  = (fav != 0);
     }

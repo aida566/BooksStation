@@ -22,11 +22,9 @@ Firebase firebase;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restablecer_password);
 
+        getSupportActionBar().setTitle("");
+
         inicializar();
-
-
-
-
     }
 
     public void inicializar(){
@@ -41,20 +39,14 @@ Firebase firebase;
                 if (!txEmail.getText().toString().isEmpty()){
                         if (firebase.correoPassword(txEmail.getText().toString())) {
                             Toast.makeText(RestablecerPassword.this, getString(R.string.correo_enviado_restablecer), Toast.LENGTH_SHORT).show();
-
                         }else{
                             Toast.makeText(RestablecerPassword.this, getString(R.string.correo_enviado_restablecer), Toast.LENGTH_SHORT).show();
                         }
                         Toast.makeText(RestablecerPassword.this, getString(R.string.error_restablecer), Toast.LENGTH_SHORT).show();
                     }else{
                         tlEmail.setError(getString(R.string.email_vacio));
-
                     }
-
-
-
             }
         });
-
     }
 }
